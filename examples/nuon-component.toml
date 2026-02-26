@@ -1,0 +1,27 @@
+# Example: Deploy GKE sandbox as a Nuon terraform component
+# managed by an AWS runner install.
+#
+# Prerequisites:
+# 1. Seed an org: USE_STAGE_API=true nctl seed empty --sandbox-mode=false
+# 2. Create the install
+# 3. Add GCP_CREDENTIALS_JSON as an app secret
+# 4. Add this component to the app
+
+#:schema https://api.nuon.co/v1/general/config-schema?type=terraform_module
+
+name              = "gke_sandbox"
+type              = "terraform_module"
+terraform_version = "1.11.3"
+
+[public_repo]
+repo      = "nuonco/gcp-gke-sandbox"
+directory = "."
+branch    = "main"
+
+[vars]
+nuon_id    = "{{.nuon.install.id}}"
+region     = "us-central1"
+project_id = "nuon-gcp-support"
+
+[env_vars]
+GOOGLE_CREDENTIALS = "{{.nuon.app.variables.gcp_credentials_json}}"
