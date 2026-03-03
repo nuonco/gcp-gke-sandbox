@@ -33,12 +33,12 @@ output "vpc" {
 output "nuon_dns" {
   value = {
     enabled = local.enable_nuon_dns
-    public_domain = local.enable_nuon_dns && var.public_root_domain != "" ? {
+    public_domain = local.enable_nuon_dns && local.public_domain != "" ? {
       zone_id     = google_dns_managed_zone.public[0].managed_zone_id
       name        = google_dns_managed_zone.public[0].dns_name
       nameservers = google_dns_managed_zone.public[0].name_servers
     } : { zone_id = "", name = "", nameservers = tolist([""]) }
-    internal_domain = var.internal_root_domain != "" ? {
+    internal_domain = local.internal_domain != "" ? {
       zone_id     = google_dns_managed_zone.internal[0].managed_zone_id
       name        = google_dns_managed_zone.internal[0].dns_name
       nameservers = google_dns_managed_zone.internal[0].name_servers

@@ -4,6 +4,9 @@ locals {
 
   enable_nuon_dns = contains(["1", "true"], var.enable_nuon_dns)
 
+  public_domain   = trimprefix(trimsuffix(trimspace(var.public_root_domain), "."), ".")
+  internal_domain = trimprefix(trimsuffix(trimspace(var.internal_root_domain), "."), ".")
+
   default_labels = merge(var.labels, {
     "nuon-id"          = var.nuon_id
     "managed-by"       = "nuon"
