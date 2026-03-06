@@ -28,6 +28,18 @@ variable "project_id" {
 # Cluster configuration
 # -----------------------------------------------------------
 
+variable "enable_cert_manager" {
+  description = "Whether to install cert-manager and its cluster issuers."
+  type        = bool
+  default     = false
+}
+
+variable "enable_linkerd" {
+  description = "Whether to install the Linkerd service mesh."
+  type        = bool
+  default     = false
+}
+
 variable "cluster_name" {
   description = "Name for the GKE cluster. Defaults to n-{nuon_id}."
   type        = string

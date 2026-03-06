@@ -6,5 +6,5 @@ resource "kubernetes_namespace_v1" "main" {
     labels = local.default_labels
   }
 
-  depends_on = [google_container_cluster.autopilot, google_container_node_pool.main]
+  depends_on = [google_container_cluster.main, google_container_node_pool.main]
 }

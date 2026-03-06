@@ -7,11 +7,11 @@ output "account" {
 
 output "cluster" {
   value = {
-    name                       = google_container_cluster.autopilot.name
-    endpoint                   = "https://${google_container_cluster.autopilot.endpoint}"
-    certificate_authority_data = google_container_cluster.autopilot.master_auth[0].cluster_ca_certificate
-    location                   = google_container_cluster.autopilot.location
-    self_link                  = google_container_cluster.autopilot.self_link
+    name                       = google_container_cluster.main.name
+    endpoint                   = "https://${google_container_cluster.main.endpoint}"
+    certificate_authority_data = google_container_cluster.main.master_auth[0].cluster_ca_certificate
+    location                   = google_container_cluster.main.location
+    self_link                  = google_container_cluster.main.self_link
   }
 }
 
@@ -58,10 +58,10 @@ output "availability_zones" {
 }
 
 output "linkerd" {
-  value = {
+  value = var.enable_linkerd ? {
     # Name of the EgressNetwork resource in the linkerd-egress namespace.
     # Used by the tunnel component's TLSRoute to intercept outbound
     # connections to tunnel.<domain> and route them to the proxy service.
     all_egress_traffic = local.linkerd_egress_network_name
-  }
+  } : null
 }
