@@ -173,6 +173,59 @@ variable "master_authorized_networks" {
   default = []
 }
 
+variable "provision_sa_email" {
+  description = "Email of the provision service account."
+  type        = string
+}
+
+variable "maintenance_sa_email" {
+  description = "Email of the maintenance service account."
+  type        = string
+}
+
+variable "deprovision_sa_email" {
+  description = "Email of the deprovision service account."
+  type        = string
+}
+
+variable "break_glass_sa_email" {
+  description = "Email of the break-glass service account. If empty, no access is granted."
+  type        = string
+  default     = ""
+}
+
+variable "maintenance_cluster_role_rules_override" {
+  type = list(object({
+    apiGroups     = list(string),
+    resources     = list(string),
+    verbs         = list(string),
+    resourceNames = optional(list(string)),
+  }))
+  description = "Custom rules for the maintenance ClusterRole. If provided, these replace the defaults."
+  default     = []
+}
+
+variable "additional_service_account_access" {
+  type = map(object({
+    sa_email      = string
+    gke_iam_roles = list(string)
+    cluster_role  = string
+  }))
+  description = "Additional service account access entries. Each entry gets IAM bindings and a ClusterRoleBinding."
+  default     = {}
+}
+
+variable "additional_workload_identities" {
+  type = list(object({
+    name            = string
+    namespace       = string
+    service_account = string
+    gcp_sa_email    = string
+  }))
+  description = "Additional Workload Identity bindings (GKE equivalent of IRSA)."
+  default     = []
+}
+
 # -----------------------------------------------------------
 # Labels / tags
 # -----------------------------------------------------------
