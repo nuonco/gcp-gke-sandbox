@@ -34,6 +34,18 @@ variable "enable_cert_manager" {
   default     = false
 }
 
+variable "enable_kyverno" {
+  description = "Whether to install the Kyverno policy engine."
+  type        = bool
+  default     = false
+}
+
+variable "kyverno_policy_dir" {
+  description = "Path to a directory with additional Kyverno policy manifests."
+  type        = string
+  default     = "./kyverno-policies"
+}
+
 variable "enable_linkerd" {
   description = "Whether to install the Linkerd service mesh."
   type        = bool
