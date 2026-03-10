@@ -57,6 +57,13 @@ output "availability_zones" {
   value = join(",", google_container_node_pool.main.node_locations)
 }
 
+output "workload_identity" {
+  value = {
+    restate_sa_email          = google_service_account.restate.email
+    secrets_accessor_sa_email = google_service_account.secrets_accessor.email
+  }
+}
+
 output "linkerd" {
   value = {
     # Name of the EgressNetwork resource in the linkerd-egress namespace.

@@ -102,3 +102,60 @@ resource "google_container_node_pool" "main" {
     labels = local.default_labels
   }
 }
+
+# Workload node pool for Restate pods.
+# Defaults to x86; set workload_machine_type to a c4a family for ARM.
+resource "google_container_node_pool" "workload" {
+  project    = var.project_id
+  name       = "workload"
+  cluster    = google_container_cluster.autopilot.name
+  location   = var.region
+
+  initial_node_count = var.workload_node_initial_count
+
+  autoscaling {
+    min_node_count  = var.workload_node_min_count
+    max_node_count  = var.workload_node_max_count
+    location_policy = "BALANCED"
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  node_config {
+    machine_type = var.workload_machine_type
+    disk_size_gb = var.workload_disk_size_gb
+    disk_type    = var.workload_disk_type
+
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
+
+    shielded_instance_config {
+      enable_secure_boot          = true
+      enable_integrity_monitoring = true
+    }
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+
+    labels = merge(local.default_labels, {
+      "workload-type" = "restate"
+    })
+
+    linux_node_config {
+      sysctls = {
+        "fs.aio-max-nr"              = "65536"
+        "fs.file-max"                = "104857"
+        "fs.inotify.max_user_watches" = "1000000"
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [initial_node_count]
+  }
+}

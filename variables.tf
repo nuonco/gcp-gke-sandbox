@@ -140,6 +140,72 @@ variable "additional_namespaces" {
 # Access control
 # -----------------------------------------------------------
 
+# -----------------------------------------------------------
+# Workload node pool
+# -----------------------------------------------------------
+
+variable "workload_machine_type" {
+  description = "Machine type for the workload node pool. Use c4a family for ARM."
+  type        = string
+  default     = "c3-standard-8"
+}
+
+variable "workload_node_initial_count" {
+  description = "Initial node count per zone for the workload pool."
+  type        = number
+  default     = 1
+}
+
+variable "workload_node_min_count" {
+  description = "Minimum node count per zone for the workload pool."
+  type        = number
+  default     = 1
+}
+
+variable "workload_node_max_count" {
+  description = "Maximum node count per zone for the workload pool."
+  type        = number
+  default     = 6
+}
+
+variable "workload_disk_size_gb" {
+  description = "Boot disk size in GB for workload nodes."
+  type        = number
+  default     = 100
+}
+
+variable "workload_disk_type" {
+  description = "Boot disk type for workload nodes. Use hyperdisk-balanced for c4a ARM."
+  type        = string
+  default     = "pd-ssd"
+}
+
+# -----------------------------------------------------------
+# Storage
+# -----------------------------------------------------------
+
+variable "enable_hyperdisk" {
+  description = "Whether to create the hyperdisk-balanced StorageClass (required for ARM/c4a)."
+  type        = bool
+  default     = false
+}
+
+variable "hyperdisk_iops" {
+  description = "Provisioned IOPS for hyperdisk-balanced StorageClass."
+  type        = string
+  default     = "10000"
+}
+
+variable "hyperdisk_throughput" {
+  description = "Provisioned throughput for hyperdisk-balanced StorageClass."
+  type        = string
+  default     = "1500Mi"
+}
+
+# -----------------------------------------------------------
+# Access control
+# -----------------------------------------------------------
+
 variable "master_authorized_networks" {
   description = "CIDR blocks authorized to access the GKE control plane."
   type = list(object({
