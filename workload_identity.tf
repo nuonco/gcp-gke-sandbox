@@ -21,10 +21,20 @@ resource "google_service_account" "secrets_accessor" {
   display_name = "Secret accessor for ${var.nuon_id}"
 }
 
-resource "google_project_iam_member" "secrets_accessor" {
-  project = var.project_id
-  role    = "roles/secretmanager.secretAccessor"
-  member  = "serviceAccount:${google_service_account.secrets_accessor.email}"
+resource "google_secret_manager_secret" "region_token" {
+  project   = var.project_id
+  secret_id = "restatecloudregiontoken-${var.nuon_id}"
+
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "secrets_accessor" {
+  project   = var.project_id
+  secret_id = google_secret_manager_secret.region_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.secrets_accessor.email}"
 }
 
 resource "google_service_account_iam_member" "secrets_accessor_wi_ingress" {
