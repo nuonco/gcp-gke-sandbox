@@ -35,9 +35,10 @@ output "nuon_dns" {
     enabled = local.enable_nuon_dns
     public_domain = local.enable_nuon_dns && local.public_domain != "" ? {
       zone_id     = google_dns_managed_zone.public[0].managed_zone_id
+      zone_name   = google_dns_managed_zone.public[0].name
       name        = google_dns_managed_zone.public[0].dns_name
       nameservers = google_dns_managed_zone.public[0].name_servers
-    } : { zone_id = "", name = "", nameservers = tolist([""]) }
+    } : { zone_id = "", zone_name = "", name = "", nameservers = tolist([""]) }
     internal_domain = local.internal_domain != "" ? {
       zone_id     = google_dns_managed_zone.internal[0].managed_zone_id
       name        = google_dns_managed_zone.internal[0].dns_name
