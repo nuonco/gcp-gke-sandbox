@@ -23,7 +23,7 @@ resource "google_service_account" "secrets_accessor" {
 
 resource "google_secret_manager_secret" "region_token" {
   project   = var.project_id
-  secret_id = "restatecloudregiontoken-${var.nuon_id}"
+  secret_id = "restatecloudregiontoken_${var.nuon_id}"
 
   replication {
     auto {}
