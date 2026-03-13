@@ -40,13 +40,13 @@ resource "google_secret_manager_secret_iam_member" "secrets_accessor" {
 resource "google_service_account_iam_member" "secrets_accessor_wi_ingress" {
   service_account_id = google_service_account.secrets_accessor.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[restate-cloud-ingress/default]"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[restate-cloud-ingress/restate-cloud-ingress]"
   depends_on         = [google_container_cluster.autopilot]
 }
 
 resource "google_service_account_iam_member" "secrets_accessor_wi_tunnel" {
   service_account_id = google_service_account.secrets_accessor.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[restate-cloud-tunnel/default]"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[restate-cloud-tunnel/restate-cloud-tunnel]"
   depends_on         = [google_container_cluster.autopilot]
 }
