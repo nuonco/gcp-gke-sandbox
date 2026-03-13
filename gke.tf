@@ -6,7 +6,7 @@
 # Standard gives full node control; autoscaling handles capacity automatically.
 # -----------------------------------------------------------------------------
 
-resource "google_container_cluster" "autopilot" {
+resource "google_container_cluster" "main" {
   project  = var.project_id
   name     = local.cluster_name
   location = var.region
@@ -66,7 +66,7 @@ resource "google_container_cluster" "autopilot" {
 resource "google_container_node_pool" "main" {
   project    = var.project_id
   name       = "main"
-  cluster    = google_container_cluster.autopilot.name
+  cluster    = google_container_cluster.main.name
   location   = var.region
 
   autoscaling {

@@ -15,4 +15,6 @@ locals {
   })
 
   namespaces = concat([var.nuon_id], var.additional_namespaces)
+
+  has_break_glass = var.break_glass_sa_email != ""
 }
