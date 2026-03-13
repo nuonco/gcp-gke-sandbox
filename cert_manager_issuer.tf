@@ -51,7 +51,7 @@ resource "kubectl_manifest" "cluster_issuer_public" {
           {
             selector = {
               dnsZones = [
-                google_dns_managed_zone.public[0].dns_name,
+                trimsuffix(google_dns_managed_zone.public[0].dns_name, "."),
               ]
             }
             dns01 = {
