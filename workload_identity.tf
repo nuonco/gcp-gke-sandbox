@@ -3,19 +3,6 @@ resource "google_service_account" "restate" {
   display_name = "Restate pods for ${var.nuon_id}"
 }
 
-resource "google_service_account_iam_member" "restate_wi" {
-  service_account_id = google_service_account.restate.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/*"
-
-  condition {
-    title      = "restate-sa-only"
-    expression = "request.auth.claims.google.subject.endsWith(':restate')"
-  }
-
-  depends_on = [google_container_cluster.autopilot]
-}
-
 resource "google_service_account" "secrets_accessor" {
   account_id   = "${substr(var.nuon_id, 0, 20)}-sec"
   display_name = "Secret accessor for ${var.nuon_id}"
