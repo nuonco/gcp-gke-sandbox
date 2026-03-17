@@ -60,6 +60,12 @@ resource "google_container_cluster" "autopilot" {
     evaluation_mode = "DISABLED"
   }
 
+  addons_config {
+    config_connector_config {
+      enabled = true
+    }
+  }
+
   resource_labels = local.default_labels
 }
 
