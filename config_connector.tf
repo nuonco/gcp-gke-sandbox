@@ -34,6 +34,7 @@ resource "kubectl_manifest" "config_connector_context" {
     apiVersion = "core.cnrm.cloud.google.com/v1beta1"
     kind       = "ConfigConnectorContext"
     metadata = {
+      name      = "configconnectorcontext.core.cnrm.cloud.google.com"
       namespace = "cnrm-system"
     }
     spec = {
