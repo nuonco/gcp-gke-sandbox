@@ -31,60 +31,14 @@ resource "helm_release" "cert_manager" {
       timeout      = "5m"
       backoffLimit = 20
     }
+    serviceAccount = {
+      annotations = {
+        "iam.gke.io/gcp-service-account" = google_service_account.cert_manager.email
+      }
+    }
   })]
 
   depends_on = [google_container_cluster.autopilot, google_container_node_pool.main]
-}
-
-# Self-signed bootstrap issuer — used only to issue the public-issuer CA cert.
-resource "kubectl_manifest" "cluster_issuer_bootstrap" {
-  yaml_body = yamlencode({
-    apiVersion = "cert-manager.io/v1"
-    kind       = "ClusterIssuer"
-    metadata   = { name = "selfsigned-bootstrap" }
-    spec       = { selfSigned = {} }
-  })
-
-  depends_on = [helm_release.cert_manager]
-}
-
-# CA cert for public-issuer — self-signed, in-cluster only.
-resource "kubectl_manifest" "public_issuer_ca_cert" {
-  yaml_body = yamlencode({
-    apiVersion = "cert-manager.io/v1"
-    kind       = "Certificate"
-    metadata = {
-      name      = "public-issuer-ca"
-      namespace = "cert-manager"
-    }
-    spec = {
-      isCA       = true
-      commonName = "public-issuer"
-      secretName = "public-issuer-ca-tls"
-      issuerRef = {
-        name = "selfsigned-bootstrap"
-        kind = "ClusterIssuer"
-      }
-      privateKey = { algorithm = "ECDSA", size = 256 }
-    }
-  })
-
-  depends_on = [kubectl_manifest.cluster_issuer_bootstrap]
-}
-
-# public-issuer ClusterIssuer — used by ingress/tunnel Certificate resources.
-# Issues self-signed certs (smoke test); swap for ACME/DNS01 in production.
-resource "kubectl_manifest" "cluster_issuer_public" {
-  yaml_body = yamlencode({
-    apiVersion = "cert-manager.io/v1"
-    kind       = "ClusterIssuer"
-    metadata   = { name = "public-issuer" }
-    spec = {
-      ca = { secretName = "public-issuer-ca-tls" }
-    }
-  })
-
-  depends_on = [kubectl_manifest.public_issuer_ca_cert]
 }
 
 # -----------------------------------------------------------------------------
