@@ -55,7 +55,7 @@ output "namespaces" {
 # Used by ingress, tunnel, and gcp_lb components for topology spread
 # and per-zone resource allocation.
 output "availability_zones" {
-  value = join(",", google_container_node_pool.main.node_locations)
+  value = join(",", google_container_node_pool.default.node_locations)
 }
 
 output "workload_identity" {

@@ -35,9 +35,15 @@ variable "cluster_name" {
 }
 
 variable "node_machine_type" {
-  description = "Machine type for the default node pool."
+  description = "Machine type for the node pool. Use c4a family for ARM."
   type        = string
-  default     = "e2-standard-4"
+  default     = "c3-standard-8"
+}
+
+variable "node_initial_count" {
+  description = "Initial node count per zone."
+  type        = number
+  default     = 1
 }
 
 variable "node_min_count" {
@@ -49,7 +55,19 @@ variable "node_min_count" {
 variable "node_max_count" {
   description = "Maximum node count per zone for autoscaling."
   type        = number
-  default     = 10
+  default     = 6
+}
+
+variable "node_disk_size_gb" {
+  description = "Boot disk size in GB."
+  type        = number
+  default     = 100
+}
+
+variable "node_disk_type" {
+  description = "Boot disk type. Use hyperdisk-balanced for c4a ARM."
+  type        = string
+  default     = "pd-ssd"
 }
 
 variable "release_channel" {
@@ -136,45 +154,6 @@ variable "additional_namespaces" {
   default     = []
 }
 
-# -----------------------------------------------------------
-# Workload node pool
-# -----------------------------------------------------------
-
-variable "workload_machine_type" {
-  description = "Machine type for the workload node pool. Use c4a family for ARM."
-  type        = string
-  default     = "c3-standard-8"
-}
-
-variable "workload_node_initial_count" {
-  description = "Initial node count per zone for the workload pool."
-  type        = number
-  default     = 1
-}
-
-variable "workload_node_min_count" {
-  description = "Minimum node count per zone for the workload pool."
-  type        = number
-  default     = 1
-}
-
-variable "workload_node_max_count" {
-  description = "Maximum node count per zone for the workload pool."
-  type        = number
-  default     = 6
-}
-
-variable "workload_disk_size_gb" {
-  description = "Boot disk size in GB for workload nodes."
-  type        = number
-  default     = 100
-}
-
-variable "workload_disk_type" {
-  description = "Boot disk type for workload nodes. Use hyperdisk-balanced for c4a ARM."
-  type        = string
-  default     = "pd-ssd"
-}
 
 # -----------------------------------------------------------
 # Storage

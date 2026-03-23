@@ -3,7 +3,7 @@ resource "kubernetes_namespace_v1" "kyverno" {
     name = "kyverno"
   }
 
-  depends_on = [google_container_node_pool.main]
+  depends_on = [google_container_node_pool.default]
 }
 
 resource "helm_release" "kyverno" {
