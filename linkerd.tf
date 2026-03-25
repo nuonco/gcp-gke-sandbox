@@ -38,7 +38,7 @@ resource "helm_release" "cert_manager" {
     }
   })]
 
-  depends_on = [google_container_cluster.autopilot, google_container_node_pool.main]
+  depends_on = [google_container_cluster.autopilot, google_container_node_pool.default]
 }
 
 # -----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ resource "helm_release" "linkerd_crds" {
     installGatewayAPI = true
   })]
 
-  depends_on = [google_container_cluster.autopilot, google_container_node_pool.main]
+  depends_on = [google_container_cluster.autopilot, google_container_node_pool.default]
 }
 
 resource "helm_release" "linkerd_control_plane" {
