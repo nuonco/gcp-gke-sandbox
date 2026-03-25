@@ -113,11 +113,6 @@ resource "google_container_node_pool" "default" {
       "workload-type" = "restate"
     })
 
-    # Remove the auto-applied ARM taint so that all pods (infra and workload)
-    # can schedule without needing explicit tolerations. Since the cluster uses
-    # a single node pool, every pod must run on these nodes.
-    taint = []
-
     linux_node_config {
       sysctls = {
         "fs.aio-max-nr"               = "65536"
