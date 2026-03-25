@@ -127,6 +127,16 @@ variable "internal_root_domain" {
 }
 
 # -----------------------------------------------------------
+# Linkerd
+# -----------------------------------------------------------
+
+variable "enable_linkerd" {
+  description = "Whether to install Linkerd service mesh and cert-manager."
+  type        = bool
+  default     = true
+}
+
+# -----------------------------------------------------------
 # Namespaces
 # -----------------------------------------------------------
 

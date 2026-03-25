@@ -58,10 +58,10 @@ output "availability_zones" {
 }
 
 output "linkerd" {
-  value = {
+  value = var.enable_linkerd ? {
     # Name of the EgressNetwork resource in the linkerd-egress namespace.
     # Used by the tunnel component's TLSRoute to intercept outbound
     # connections to tunnel.<domain> and route them to the proxy service.
     all_egress_traffic = local.linkerd_egress_network_name
-  }
+  } : null
 }

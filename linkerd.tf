@@ -12,6 +12,8 @@ locals {
 # -----------------------------------------------------------------------------
 
 resource "helm_release" "cert_manager" {
+  count = var.enable_linkerd ? 1 : 0
+
   name             = "cert-manager"
   repository       = "https://charts.jetstack.io"
   chart            = "cert-manager"
@@ -38,6 +40,8 @@ resource "helm_release" "cert_manager" {
 
 # Self-signed bootstrap issuer — used only to issue the public-issuer CA cert.
 resource "kubectl_manifest" "cluster_issuer_bootstrap" {
+  count = var.enable_linkerd ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
@@ -50,6 +54,8 @@ resource "kubectl_manifest" "cluster_issuer_bootstrap" {
 
 # CA cert for public-issuer — self-signed, in-cluster only.
 resource "kubectl_manifest" "public_issuer_ca_cert" {
+  count = var.enable_linkerd ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "cert-manager.io/v1"
     kind       = "Certificate"
@@ -75,6 +81,8 @@ resource "kubectl_manifest" "public_issuer_ca_cert" {
 # public-issuer ClusterIssuer — used by ingress/tunnel Certificate resources.
 # Issues self-signed certs (smoke test); swap for ACME/DNS01 in production.
 resource "kubectl_manifest" "cluster_issuer_public" {
+  count = var.enable_linkerd ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
@@ -96,12 +104,16 @@ resource "kubectl_manifest" "cluster_issuer_public" {
 # -----------------------------------------------------------------------------
 
 resource "tls_private_key" "linkerd_trust_anchor" {
+  count = var.enable_linkerd ? 1 : 0
+
   algorithm   = "ECDSA"
   ecdsa_curve = "P256"
 }
 
 resource "tls_self_signed_cert" "linkerd_trust_anchor" {
-  private_key_pem   = tls_private_key.linkerd_trust_anchor.private_key_pem
+  count = var.enable_linkerd ? 1 : 0
+
+  private_key_pem   = tls_private_key.linkerd_trust_anchor[0].private_key_pem
   is_ca_certificate = true
 
   subject {
@@ -113,12 +125,16 @@ resource "tls_self_signed_cert" "linkerd_trust_anchor" {
 }
 
 resource "tls_private_key" "linkerd_issuer" {
+  count = var.enable_linkerd ? 1 : 0
+
   algorithm   = "ECDSA"
   ecdsa_curve = "P256"
 }
 
 resource "tls_cert_request" "linkerd_issuer" {
-  private_key_pem = tls_private_key.linkerd_issuer.private_key_pem
+  count = var.enable_linkerd ? 1 : 0
+
+  private_key_pem = tls_private_key.linkerd_issuer[0].private_key_pem
 
   subject {
     common_name = "identity.linkerd.cluster.local"
@@ -126,9 +142,11 @@ resource "tls_cert_request" "linkerd_issuer" {
 }
 
 resource "tls_locally_signed_cert" "linkerd_issuer" {
-  cert_request_pem      = tls_cert_request.linkerd_issuer.cert_request_pem
-  ca_private_key_pem    = tls_private_key.linkerd_trust_anchor.private_key_pem
-  ca_cert_pem           = tls_self_signed_cert.linkerd_trust_anchor.cert_pem
+  count = var.enable_linkerd ? 1 : 0
+
+  cert_request_pem      = tls_cert_request.linkerd_issuer[0].cert_request_pem
+  ca_private_key_pem    = tls_private_key.linkerd_trust_anchor[0].private_key_pem
+  ca_cert_pem           = tls_self_signed_cert.linkerd_trust_anchor[0].cert_pem
   is_ca_certificate     = true
   validity_period_hours = 8760 # 1 year
   allowed_uses          = ["cert_signing"]
@@ -146,6 +164,8 @@ resource "tls_locally_signed_cert" "linkerd_issuer" {
 # -----------------------------------------------------------------------------
 
 resource "helm_release" "linkerd_crds" {
+  count = var.enable_linkerd ? 1 : 0
+
   name             = "linkerd-crds"
   repository       = "https://helm.linkerd.io/edge"
   chart            = "linkerd-crds"
@@ -162,6 +182,8 @@ resource "helm_release" "linkerd_crds" {
 }
 
 resource "helm_release" "linkerd_control_plane" {
+  count = var.enable_linkerd ? 1 : 0
+
   name       = "linkerd-control-plane"
   repository = "https://helm.linkerd.io/edge"
   chart      = "linkerd-control-plane"
@@ -172,15 +194,15 @@ resource "helm_release" "linkerd_control_plane" {
   set = [
     {
       name  = "identityTrustAnchorsPEM"
-      value = tls_self_signed_cert.linkerd_trust_anchor.cert_pem
+      value = tls_self_signed_cert.linkerd_trust_anchor[0].cert_pem
     },
     {
       name  = "identity.issuer.tls.crtPEM"
-      value = tls_locally_signed_cert.linkerd_issuer.cert_pem
+      value = tls_locally_signed_cert.linkerd_issuer[0].cert_pem
     },
     {
       name  = "identity.issuer.tls.keyPEM"
-      value = tls_private_key.linkerd_issuer.private_key_pem
+      value = tls_private_key.linkerd_issuer[0].private_key_pem
     },
   ]
 
@@ -196,6 +218,8 @@ resource "helm_release" "linkerd_control_plane" {
 # -----------------------------------------------------------------------------
 
 resource "kubernetes_namespace_v1" "linkerd_egress" {
+  count = var.enable_linkerd ? 1 : 0
+
   metadata {
     name = "linkerd-egress"
     annotations = {
@@ -207,6 +231,8 @@ resource "kubernetes_namespace_v1" "linkerd_egress" {
 }
 
 resource "kubectl_manifest" "egress_network" {
+  count = var.enable_linkerd ? 1 : 0
+
   yaml_body = yamlencode({
     apiVersion = "policy.linkerd.io/v1alpha1"
     kind       = "EgressNetwork"
