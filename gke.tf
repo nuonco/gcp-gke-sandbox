@@ -60,6 +60,10 @@ resource "google_container_cluster" "autopilot" {
     evaluation_mode = "DISABLED"
   }
 
+  gateway_api_config {
+    channel = "CHANNEL_STANDARD"
+  }
+
   resource_labels = local.default_labels
 }
 

@@ -25,8 +25,9 @@ output "gar" {
 
 output "vpc" {
   value = {
-    network    = local.network
-    subnetwork = local.subnetwork
+    network           = local.network
+    network_self_link = local.network_self_link
+    subnetwork        = local.subnetwork
   }
 }
 
@@ -35,12 +36,12 @@ output "nuon_dns" {
     enabled = local.enable_nuon_dns
     public_domain = local.enable_nuon_dns && local.public_domain != "" ? {
       zone_id     = google_dns_managed_zone.public[0].managed_zone_id
-      name        = google_dns_managed_zone.public[0].dns_name
+      name        = trimsuffix(google_dns_managed_zone.public[0].dns_name, ".")
       nameservers = google_dns_managed_zone.public[0].name_servers
     } : { zone_id = "", name = "", nameservers = tolist([""]) }
     internal_domain = local.internal_domain != "" ? {
       zone_id     = google_dns_managed_zone.internal[0].managed_zone_id
-      name        = google_dns_managed_zone.internal[0].dns_name
+      name        = trimsuffix(google_dns_managed_zone.internal[0].dns_name, ".")
       nameservers = google_dns_managed_zone.internal[0].name_servers
     } : { zone_id = "", name = "", nameservers = tolist([""]) }
   }

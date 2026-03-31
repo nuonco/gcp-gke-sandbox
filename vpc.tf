@@ -58,6 +58,7 @@ resource "google_compute_router_nat" "main" {
   }
 }
 
+
 data "google_compute_network" "existing" {
   count   = local.create_vpc ? 0 : 1
   project = var.project_id
