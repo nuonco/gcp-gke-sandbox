@@ -175,7 +175,7 @@ resource "helm_release" "linkerd_crds" {
   wait             = true
 
   values = [yamlencode({
-    installGatewayAPI = true
+    installGatewayAPI = false
   })]
 
   depends_on = [google_container_cluster.autopilot, google_container_node_pool.main]
