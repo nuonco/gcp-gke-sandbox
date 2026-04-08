@@ -71,7 +71,7 @@ resource "google_container_cluster" "autopilot" {
 # Compute Engine SA 
 resource "google_service_account" "gke_nodes" {
   project      = var.project_id
-  account_id   = "${local.cluster_name}-nodes"
+  account_id   = local.cluster_service_account_name
   display_name = "GKE node pool SA for ${local.cluster_name}"
 }
 
