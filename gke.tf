@@ -67,11 +67,43 @@ resource "google_container_cluster" "autopilot" {
   resource_labels = local.default_labels
 }
 
+# Node pool service account — least-privilege SA replacing the default
+# Compute Engine SA 
+resource "google_service_account" "gke_nodes" {
+  project      = var.project_id
+  account_id   = "${local.cluster_name}-nodes"
+  display_name = "GKE node pool SA for ${local.cluster_name}"
+}
+
+resource "google_project_iam_member" "gke_nodes_log_writer" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
+resource "google_project_iam_member" "gke_nodes_metric_writer" {
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+  member  = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
+resource "google_project_iam_member" "gke_nodes_monitoring_viewer" {
+  project = var.project_id
+  role    = "roles/monitoring.viewer"
+  member  = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
+resource "google_project_iam_member" "gke_nodes_artifact_reader" {
+  project = var.project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
 resource "google_container_node_pool" "main" {
-  project    = var.project_id
-  name       = "main"
-  cluster    = google_container_cluster.autopilot.name
-  location   = var.region
+  project  = var.project_id
+  name     = "main"
+  cluster  = google_container_cluster.autopilot.name
+  location = var.region
 
   autoscaling {
     min_node_count  = var.node_min_count
@@ -85,7 +117,8 @@ resource "google_container_node_pool" "main" {
   }
 
   node_config {
-    machine_type = var.node_machine_type
+    machine_type    = var.node_machine_type
+    service_account = google_service_account.gke_nodes.email
 
     # Required for Workload Identity
     workload_metadata_config {
