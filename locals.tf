@@ -1,6 +1,5 @@
 locals {
-  cluster_name                 = substr(var.cluster_name != "" ? var.cluster_name : "n-${var.nuon_id}", 0, 38)
-  cluster_service_account_name = substr(var.cluster_name != "" ? var.cluster_name : "n-${var.nuon_id}", 0, 30)
+  cluster_name = substr(var.cluster_name != "" ? var.cluster_name : "n-${var.nuon_id}", 0, 38)
   create_vpc                   = var.network == ""
 
   enable_nuon_dns = contains(["1", "true"], var.enable_nuon_dns)
