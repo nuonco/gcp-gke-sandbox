@@ -24,6 +24,11 @@ variable "project_id" {
   type        = string
 }
 
+variable "gke_node_pool_sa_email" {
+  description = "Email of the GKE node pool service account (created by install stack)."
+  type        = string
+}
+
 # -----------------------------------------------------------
 # Cluster configuration
 # -----------------------------------------------------------

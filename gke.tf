@@ -68,10 +68,10 @@ resource "google_container_cluster" "autopilot" {
 }
 
 resource "google_container_node_pool" "main" {
-  project    = var.project_id
-  name       = "main"
-  cluster    = google_container_cluster.autopilot.name
-  location   = var.region
+  project  = var.project_id
+  name     = "main"
+  cluster  = google_container_cluster.autopilot.name
+  location = var.region
 
   autoscaling {
     min_node_count  = var.node_min_count
@@ -85,7 +85,8 @@ resource "google_container_node_pool" "main" {
   }
 
   node_config {
-    machine_type = var.node_machine_type
+    machine_type    = var.node_machine_type
+    service_account = var.gke_node_pool_sa_email
 
     # Required for Workload Identity
     workload_metadata_config {
