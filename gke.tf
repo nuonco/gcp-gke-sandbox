@@ -91,9 +91,10 @@ resource "google_container_node_pool" "default" {
   }
 
   node_config {
-    machine_type = var.node_machine_type
-    disk_size_gb = var.node_disk_size_gb
-    disk_type    = var.node_disk_type
+    machine_type    = var.node_machine_type
+    disk_size_gb    = var.node_disk_size_gb
+    disk_type       = var.node_disk_type
+    service_account = google_service_account.gke_nodes.email
 
     workload_metadata_config {
       mode = "GKE_METADATA"
