@@ -7,6 +7,8 @@
 # -----------------------------------------------------------------------------
 
 resource "google_container_cluster" "autopilot" {
+  depends_on = [google_project_service.container]
+
   project  = var.project_id
   name     = local.cluster_name
   location = var.region

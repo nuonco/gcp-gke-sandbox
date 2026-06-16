@@ -7,6 +7,8 @@ resource "google_dns_managed_zone" "public" {
   description   = "Public DNS zone for ${local.cluster_name}"
   labels        = local.default_labels
   force_destroy = true
+
+  depends_on = [google_project_service.dns]
 }
 
 resource "google_dns_managed_zone" "internal" {
@@ -17,6 +19,8 @@ resource "google_dns_managed_zone" "internal" {
   dns_name      = "${local.internal_domain}."
   visibility    = "private"
   force_destroy = true
+
+  depends_on = [google_project_service.dns]
 
   private_visibility_config {
     networks {
