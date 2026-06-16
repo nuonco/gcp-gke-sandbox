@@ -8,6 +8,8 @@ resource "google_compute_network" "main" {
   project                 = var.project_id
   name                    = "${local.cluster_name}-vpc"
   auto_create_subnetworks = false
+
+  depends_on = [google_project_service.compute]
 }
 
 resource "google_compute_subnetwork" "gke" {
@@ -63,6 +65,8 @@ data "google_compute_network" "existing" {
   count   = local.create_vpc ? 0 : 1
   project = var.project_id
   name    = var.network
+
+  depends_on = [google_project_service.compute]
 }
 
 locals {

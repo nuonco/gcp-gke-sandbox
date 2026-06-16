@@ -4,4 +4,6 @@ resource "google_artifact_registry_repository" "main" {
   repository_id = local.cluster_name
   format        = "DOCKER"
   labels        = local.default_labels
+
+  depends_on = [google_project_service.artifact_registry]
 }
