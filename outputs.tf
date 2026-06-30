@@ -48,7 +48,7 @@ output "nuon_dns" {
 }
 
 output "namespaces" {
-  value = [for ns in kubernetes_namespace_v1.main : ns.metadata[0].name]
+  value = [for ns in kubectl_manifest.main : ns.name]
 }
 
 # Comma-separated list of available zones in the cluster region.
