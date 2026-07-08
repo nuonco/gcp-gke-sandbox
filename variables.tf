@@ -57,6 +57,16 @@ variable "node_max_count" {
   default     = 10
 }
 
+variable "maintenance_recurring_window" {
+  description = "Recurring window during which GKE may perform cluster/node maintenance. Null leaves maintenance unrestricted."
+  type = object({
+    start_time = string
+    end_time   = string
+    recurrence = string
+  })
+  default = null
+}
+
 variable "node_secure_boot" {
   description = "Enable secure boot on node pool nodes. Only disable if workloads load unsigned kernel modules."
   type        = bool

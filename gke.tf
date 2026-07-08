@@ -32,6 +32,20 @@ resource "google_container_cluster" "autopilot" {
     channel = var.release_channel
   }
 
+  # Release-channel clusters force node auto-upgrade on, so this window is the
+  # only control over when GKE rotates nodes (quorum-sensitive workloads like
+  # clickhouse-keeper included).
+  dynamic "maintenance_policy" {
+    for_each = var.maintenance_recurring_window == null ? [] : [var.maintenance_recurring_window]
+    content {
+      recurring_window {
+        start_time = maintenance_policy.value.start_time
+        end_time   = maintenance_policy.value.end_time
+        recurrence = maintenance_policy.value.recurrence
+      }
+    }
+  }
+
   # Private cluster — nodes have no public IPs; Cloud NAT handles egress.
   private_cluster_config {
     enable_private_nodes    = true
