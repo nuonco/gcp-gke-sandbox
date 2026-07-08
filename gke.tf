@@ -32,6 +32,20 @@ resource "google_container_cluster" "autopilot" {
     channel = var.release_channel
   }
 
+  # Release-channel clusters force node auto-upgrade on, so this window is the
+  # only control over when GKE rotates nodes (quorum-sensitive workloads like
+  # clickhouse-keeper included).
+  dynamic "maintenance_policy" {
+    for_each = var.maintenance_recurring_window == null ? [] : [var.maintenance_recurring_window]
+    content {
+      recurring_window {
+        start_time = maintenance_policy.value.start_time
+        end_time   = maintenance_policy.value.end_time
+        recurrence = maintenance_policy.value.recurrence
+      }
+    }
+  }
+
   # Private cluster — nodes have no public IPs; Cloud NAT handles egress.
   private_cluster_config {
     enable_private_nodes    = true
@@ -95,10 +109,8 @@ resource "google_container_node_pool" "main" {
       mode = "GKE_METADATA"
     }
 
-    # Allow Linkerd init container NET_ADMIN (iptables setup) and
-    # cert-manager webhook NET_BIND_SERVICE
     shielded_instance_config {
-      enable_secure_boot          = false
+      enable_secure_boot          = var.node_secure_boot
       enable_integrity_monitoring = true
     }
 
