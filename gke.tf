@@ -95,10 +95,8 @@ resource "google_container_node_pool" "main" {
       mode = "GKE_METADATA"
     }
 
-    # Allow Linkerd init container NET_ADMIN (iptables setup) and
-    # cert-manager webhook NET_BIND_SERVICE
     shielded_instance_config {
-      enable_secure_boot          = false
+      enable_secure_boot          = true
       enable_integrity_monitoring = true
     }
 
