@@ -57,6 +57,12 @@ variable "node_max_count" {
   default     = 10
 }
 
+variable "node_secure_boot" {
+  description = "Enable secure boot on node pool nodes. Only disable if workloads load unsigned kernel modules."
+  type        = bool
+  default     = true
+}
+
 variable "release_channel" {
   description = "GKE release channel. One of: RAPID, REGULAR, STABLE."
   type        = string

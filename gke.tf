@@ -96,7 +96,7 @@ resource "google_container_node_pool" "main" {
     }
 
     shielded_instance_config {
-      enable_secure_boot          = true
+      enable_secure_boot          = var.node_secure_boot
       enable_integrity_monitoring = true
     }
 
