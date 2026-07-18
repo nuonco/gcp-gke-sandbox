@@ -195,3 +195,15 @@ variable "tags" {
   type        = map(any)
   default     = {}
 }
+
+variable "maintenance_sa_email" {
+  type        = string
+  default     = ""
+  description = "Maintenance service account email. When set, a 'maintenance' ClusterRole (admin minus secret reads by default) is bound to it; pair with roles/container.clusterViewer instead of container.admin."
+}
+
+variable "maintenance_cluster_role_rules_override" {
+  type        = list(any)
+  default     = []
+  description = "Replaces the default maintenance ClusterRole rules entirely when non-empty."
+}
