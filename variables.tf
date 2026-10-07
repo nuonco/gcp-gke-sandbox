@@ -207,3 +207,43 @@ variable "maintenance_cluster_role_rules_override" {
   default     = []
   description = "Replaces the default maintenance ClusterRole rules entirely when non-empty."
 }
+
+# -----------------------------------------------------------
+# Karpenter
+# -----------------------------------------------------------
+
+variable "enable_karpenter" {
+  description = "Install Karpenter (karpenter-provider-gcp) with a default GCENodeClass and NodePool. The main node pool keeps running the controller."
+  type        = bool
+  default     = false
+}
+
+variable "karpenter_version" {
+  description = "karpenter-provider-gcp chart version."
+  type        = string
+  default     = "0.7.0"
+}
+
+variable "karpenter_replica_count" {
+  description = "Karpenter controller replicas."
+  type        = number
+  default     = 2
+}
+
+variable "karpenter_default_nodeclass_spec" {
+  description = "If set, replaces the spec of the default GCENodeClass."
+  type        = any
+  default     = null
+}
+
+variable "karpenter_default_nodepool_spec" {
+  description = "If set, replaces the spec of the default NodePool."
+  type        = any
+  default     = null
+}
+
+variable "karpenter_extra_helm_values" {
+  description = "Extra values for the karpenter helm chart."
+  type        = any
+  default     = null
+}
