@@ -66,3 +66,14 @@ output "linkerd" {
     all_egress_traffic = local.linkerd_egress_network_name
   } : null
 }
+
+output "karpenter" {
+  value = {
+    enabled               = var.enable_karpenter
+    namespace             = local.karpenter.namespace
+    version               = local.karpenter.version
+    controller_gsa_email  = one(google_service_account.karpenter[*].email)
+    default_nodepool_name = var.enable_karpenter ? "default" : null
+    bootstrap_node_pool   = google_container_node_pool.main.name
+  }
+}
