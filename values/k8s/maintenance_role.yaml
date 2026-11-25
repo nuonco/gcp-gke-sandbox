@@ -289,11 +289,13 @@ rules:
     resources:
       - namespaces
     verbs:
-      - "*" # over written with * so helm can do its thing
-    # default
-    # - get
-    # - list
-    # - watch
+      # helm creates and updates namespaces. deleting one takes every workload in it.
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
   - apiGroups:
       - discovery.k8s.io
     resources:
