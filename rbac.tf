@@ -1,7 +1,8 @@
 # Maintenance Kubernetes RBAC, mirroring the AWS EKS sandboxes: the
 # maintenance identity gets no cluster-admin IAM grant; its k8s access comes
-# solely from this ClusterRole (defaults: admin minus secret reads), bound to
-# the maintenance service account. GKE evaluates IAM and RBAC as a union, so
+# solely from this ClusterRole (defaults: admin minus secret reads and namespace
+# deletes), bound to the maintenance service account. GKE evaluates IAM and
+# RBAC as a union, so
 # pair this with roles/container.clusterViewer only.
 locals {
   maintenance_default_rules = yamldecode(file("${path.module}/values/k8s/maintenance_role.yaml")).rules
